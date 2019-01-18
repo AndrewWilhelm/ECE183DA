@@ -71,10 +71,16 @@
       </td>
   </tr></table>
 
+  <h3>Time Elapsed (ms):</h3>
+  <h3 id="timeDisplay"></h3>
+
   <script>
     /* Handle button / slider clicks + touches */
 
     window.onload = function () {
+      var previousTime = -1;
+      var timeDisplay = document.getElementById("timeDisplay");
+
       var ltSlider = document.getElementById("ltSlider");
       var rtSlider = document.getElementById("rtSlider");
 
@@ -100,6 +106,7 @@
           btns[i].ontouchstart = function(e) {btnSubmit(this.value); e.stopPropagation(); e.preventDefault();};
           btns[i].onmousedown = function(e) {btnSubmit(this.value); e.stopPropagation(); e.preventDefault();};
       }
+
     }
 
     /* Handle keyboard commands */
@@ -177,6 +184,11 @@
     }
 
     function btnSend(val) {
+      if(previousTime !=-1){
+        timeDisplay.innerHTML = Date.now() - previousTime;
+        console.log("here");
+      }
+
       var timeStr = new Date().toLocaleTimeString();
       var text = "(" + timeStr + ") : TX = #" + val + "<br>";
       txLog(text);
@@ -198,6 +210,7 @@
     }
 
     function btnSubmit(val) {
+      previousTime = Date.now(); // record time for timer
       var timeStr = new Date().toLocaleTimeString();
       if(leftVal.value < 0){
         leftVal.value = 0;
@@ -219,6 +232,7 @@
 
       console.log("Entries supplied, sending ~(" + leftVal.value + ", " + rightVal.value + ")");
       connection.send(bbuf.buffer);
+
     }
 
   </script>
