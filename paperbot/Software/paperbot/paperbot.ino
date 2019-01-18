@@ -58,7 +58,7 @@ int servo_right_ctr = 90;
 
 
 // WiFi AP parameters
-char ap_ssid[13];
+char ap_ssid[21];
 char* ap_password = "";
 
 // WiFi STA parameters
