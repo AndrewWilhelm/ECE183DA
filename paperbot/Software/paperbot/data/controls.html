@@ -2,19 +2,29 @@
 <html>
 <head>
   <meta charset=utf-8 />
-  <title>whooo control robots</title>
+  <title>Team Jayhawk Controller</title>
 
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 
 <body>
-  <h1>Yay Robots!</h1>
+  <h1>Team Jayhawk Controller</h1>
 
   <table width="100%">
     <tr>
       <td>
-        <input type="range" name="slide" id="ltSlider" orient="vertical" min=0 max=180 value=90/>
+        <table>
+          <tr>
+            <td><input type="range" name="slide" id="ltSlider" orient="vertical" min=0 max=180 value=90/></td>
+          </tr>
+          <tr>
+            <td><input type="text" id="leftVal" maxlength="3" value=90></td>
+          </tr>
+          <tr>
+            <td><button id="submitLeft"    name="submit" value="L">Submit</button></td>
+          </tr>
+        </table>
       </td>
       <td>
         <table class=btns>
@@ -37,7 +47,17 @@
         </table>
       </td>
       <td>
-        <input type="range" name="slide" id="rtSlider" orient="vertical" min=0 max=180 value=90/>
+        <table>
+          <tr>
+            <td><input type="range" name="slide" id="rtSlider" orient="vertical" min=0 max=180 value=90/></td>
+          </tr>
+          <tr>
+            <td><input type="text" id="rightVal" maxlength="3" value=90></td>
+          </tr>
+          <tr>
+            <td><button id="submitRight"    name="submit" value="R">Submit</button></td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
@@ -58,18 +78,27 @@
       var ltSlider = document.getElementById("ltSlider");
       var rtSlider = document.getElementById("rtSlider");
 
+      var leftVal = document.getElementById("leftVal");
+      var rightVal = document.getElementById("rightVal");
+
       var btns = document.getElementsByName("slide");
       for (var i = 0; i < btns.length; i++) {
           btns[i].oninput = function(e) {sliderSend(); e.stopPropagation(); e.preventDefault();};
-          btns[i].onchange = function() {btnRelease(); e.stopPropagation(); e.preventDefault();}
+          btns[i].onchange = function(e) {btnRelease(); e.stopPropagation(); e.preventDefault();}
       }
 
       var btns = document.getElementsByName("bt");
       for (var i = 0; i < btns.length; i++) {
           btns[i].ontouchstart = function(e) {btnSend(this.value); e.stopPropagation(); e.preventDefault();};
           btns[i].onmousedown = function(e) {btnSend(this.value); e.stopPropagation(); e.preventDefault();};
-          btns[i].ontouchend = function() {btnRelease(); e.stopPropagation(); e.preventDefault();}
-          btns[i].onmouseup = function() {btnRelease(); e.stopPropagation(); e.preventDefault();}
+          btns[i].ontouchend = function(e) {btnRelease(); e.stopPropagation(); e.preventDefault();}
+          btns[i].onmouseup = function(e) {btnRelease(); e.stopPropagation(); e.preventDefault();}
+      }
+
+      var btns = document.getElementsByName("submit");
+      for (var i = 0; i < btns.length; i++) {
+          btns[i].ontouchstart = function(e) {btnSubmit(this.value); e.stopPropagation(); e.preventDefault();};
+          btns[i].onmousedown = function(e) {btnSubmit(this.value); e.stopPropagation(); e.preventDefault();};
       }
     }
 
@@ -166,6 +195,30 @@
 
       console.log('Button released'); 
       connection.send('#0');
+    }
+
+    function btnSubmit(val) {
+      var timeStr = new Date().toLocaleTimeString();
+      if(leftVal.value < 0){
+        leftVal.value = 0;
+      } else if(leftVal.value > 180){
+        leftVal.value = 180
+      }
+      if(rightVal.value < 0){
+        rightVal.value = 0;
+      } else if(rightVal.value > 180){
+        rightVal.value = 180
+      }
+      var text = "(" + timeStr + ") : TX = ~(" + leftVal.value + ", " + rightVal.value + ")<br>";
+      txLog(text);
+
+      var bbuf = new Uint8Array(3);
+      bbuf[0] = 126; // ~
+      bbuf[1] = leftVal.value;
+      bbuf[2] = leftVal.value;
+
+      console.log("Entries supplied, sending ~(" + leftVal.value + ", " + rightVal.value + ")");
+      connection.send(bbuf.buffer);
     }
 
   </script>
