@@ -75,10 +75,11 @@
   <h3 id="timeDisplay"></h3>
 
   <script>
+
+    var previousTime = -1;
     /* Handle button / slider clicks + touches */
 
     window.onload = function () {
-      var previousTime = -1;
       var timeDisplay = document.getElementById("timeDisplay");
 
       var ltSlider = document.getElementById("ltSlider");
@@ -186,7 +187,6 @@
     function btnSend(val) {
       if(previousTime !=-1){
         timeDisplay.innerHTML = Date.now() - previousTime;
-        console.log("here");
       }
 
       var timeStr = new Date().toLocaleTimeString();
