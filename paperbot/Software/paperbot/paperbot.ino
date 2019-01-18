@@ -75,7 +75,7 @@ String css;
 void setup() {
     setupPins();
 
-    sprintf(ap_ssid, "ESP_%08X", ESP.getChipId());
+    sprintf(ap_ssid, "Jayhawk_ESP_%08X", ESP.getChipId());
 
     for(uint8_t t = 4; t > 0; t--) {
         Serial.printf("[SETUP] BOOT WAIT %d...\n", t);
