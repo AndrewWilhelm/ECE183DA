@@ -197,7 +197,10 @@ void webSocketEvent(uint8_t id, WStype_t type, uint8_t * payload, size_t length)
             if (payload[0] == '#') {
                 if(payload[1] == 'C') {
                   LED_ON;
-                  wsSend(id, "Hello world!");
+                  //wsSend(id, "Hello world!");
+                  char tx[20] = "Zero @ (xxx, xxx)";
+                  sprintf(tx, "Zero @ (%3d, %3d)", servo_left_ctr, servo_right_ctr);
+                  wsSend(id, tx);
                 }
                 else if(payload[1] == 'F') 
                   forward();
