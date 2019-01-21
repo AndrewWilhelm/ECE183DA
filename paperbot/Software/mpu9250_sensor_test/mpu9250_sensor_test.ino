@@ -23,8 +23,12 @@
 #define    ACC_FULL_SCALE_8_G        0x10
 #define    ACC_FULL_SCALE_16_G       0x18
 
-#define SDA_PORT 14
-#define SCL_PORT 12
+#define SDA_PORT D5
+#define SCL_PORT D6
+
+float biases[3] = {-28, 80, -40};
+//float biases[3] = {0, 0, 0};
+float scales[3] = {0.8233, 0.8467, 0.95};
 
 // This function read Nbytes bytes from I2C device at address Address. 
 // Put read bytes starting at register Register in the Data array. 
@@ -60,6 +64,7 @@ void setup()
   // Arduino initializations
   Wire.begin(SDA_PORT,SCL_PORT);
   Serial.begin(115200);
+  //Serial.print("Serial just began");
 
   // Set by pass mode for the magnetometers
   I2CwriteByte(MPU9250_ADDRESS,0x37,0x02);
@@ -73,7 +78,7 @@ long int cpt=0;
 // Main loop, read and display data
 void loop()
 {
-  
+  //Serial.print("Loop just started\n");
   // _______________
   // ::: Counter :::
   
@@ -83,9 +88,10 @@ void loop()
   
   // _____________________
   // :::  Magnetometer ::: 
-
+  //  Serial.print("Requesting first measurement\n");
   // Request first magnetometer single measurement
   I2CwriteByte(MAG_ADDRESS,0x0A,0x01);
+  //Serial.print("Sent the request\n");
   
   // Read register Status 1 and wait for the DRDY: Data Ready
   
@@ -95,6 +101,8 @@ void loop()
     I2Cread(MAG_ADDRESS,0x02,1,&ST1);
   }
   while (!(ST1&0x01));
+  
+  //Serial.print("Got the first measurement\n");
 
   // Read magnetometer data  
   uint8_t Mag[7];  
@@ -107,6 +115,11 @@ void loop()
   int16_t my=(Mag[3]<<8 | Mag[2]);
   int16_t mz=(Mag[5]<<8 | Mag[4]);
 
+  mx = (mx - biases[0])  * scales[0];
+  my = (my - biases[1]) * scales[1];
+  mz = (mz - biases[2]) * scales[2];
+  
+
   float heading = atan2(mx, my);
 
   // Once you have your heading, you must then add your 'Declination Angle',
@@ -114,7 +127,7 @@ void loop()
   // Find yours here: http://www.magnetic-declination.com/
   
   // If you cannot find your Declination, comment out these two lines, your compass will be slightly off.
-  float declinationAngle = 0.0404;
+  float declinationAngle = 0.1920;
   heading += declinationAngle;
 
   // Correct for when signs are reversed.
@@ -147,11 +160,3 @@ void loop()
   // End of line
   delay(100); 
 }
-
-
-
-
-
-
-
-
