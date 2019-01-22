@@ -228,7 +228,7 @@
       var bbuf = new Uint8Array(3);
       bbuf[0] = 126; // ~
       bbuf[1] = leftVal.value;
-      bbuf[2] = leftVal.value;
+      bbuf[2] = rightVal.value;
 
       console.log("Entries supplied, sending ~(" + leftVal.value + ", " + rightVal.value + ")");
       connection.send(bbuf.buffer);
