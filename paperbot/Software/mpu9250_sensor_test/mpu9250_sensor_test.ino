@@ -26,9 +26,9 @@
 #define SDA_PORT D5
 #define SCL_PORT D6
 
-float biases[3] = {-28, 80, -40};
+float biases[3] = {-66, 53, -30};
 //float biases[3] = {0, 0, 0};
-float scales[3] = {0.8233, 0.8467, 0.95};
+float scales[3] = {0.978, 1.026, 0.997};
 
 // This function read Nbytes bytes from I2C device at address Address. 
 // Put read bytes starting at register Register in the Data array. 
@@ -83,9 +83,9 @@ void loop()
   // ::: Counter :::
   
   // Display data counter
-  Serial.print (cpt++,DEC);
-  Serial.print ("\t");
-  
+//  Serial.print (cpt++,DEC);
+//  Serial.print ("\t");
+//  
   // _____________________
   // :::  Magnetometer ::: 
   //  Serial.print("Requesting first measurement\n");
@@ -141,20 +141,20 @@ void loop()
   // Convert radians to degrees for readability.
   float headingDegrees = heading * 180/PI; 
 
-  Serial.print("\rHeading:\t");
-  Serial.print(heading);
-  Serial.print(" Radians   \t");
-  Serial.print(headingDegrees);
-  Serial.println(" Degrees   \t");
+//  Serial.print("\rHeading:\t");
+//  Serial.print(heading);
+//  Serial.print(" Radians   \t");
+  Serial.println(headingDegrees);
+//  Serial.println(" Degrees   \t");
 
-  Serial.print ("Magnetometer readings:"); 
-  Serial.print ("\tMx:");
-  Serial.print (mx); 
-  Serial.print ("\tMy:");
-  Serial.print (my);
-  Serial.print ("\tMz:");
-  Serial.print (mz);  
-  Serial.println ("\t");
+//  Serial.print ("Magnetometer readings:"); 
+//  Serial.print ("\tMx:");
+//  Serial.print (mx); 
+//  Serial.print ("\tMy:");
+//  Serial.print (my);
+//  Serial.print ("\tMz:");
+//  Serial.print (mz);  
+//  Serial.println ("\t");
   
   
   // End of line
