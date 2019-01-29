@@ -4,9 +4,9 @@
 #include <MatrixMath.h>
 
 struct kalman_filter {
-  int m = 1; // number of state variables
-  int n = 1; // number of sensor observations
-  int p = 1; // number of inputs into system
+  int m; // number of state variables
+  int n; // number of sensor observations
+  int p; // number of inputs into system
   
   mtx_type[m][1] x; // m x 1
   mtx_type[n][1] z; // n x 1
@@ -22,6 +22,7 @@ struct kalman_filter {
   mtx_type[n][n] R; // n x n matrix containing covariance between each of the sensors
   
   mtx_type[m][m] I; // m x m identity matrix
+  unsigned long t;
 
 };
 
@@ -29,7 +30,10 @@ typedef struct kalman_filter KalmanFilter;
 
 KalmanFilter kf;
 
+// sets the initial parameters for the filter and starts keeping time
 void setupFilter(){
+  //Set up all matrices and constants for filter
+
   
   // Set up I
   for(int j = 0; j < m; j++){
@@ -41,9 +45,25 @@ void setupFilter(){
       }
     }
   }
-  
+  kf.t = millis();
 }
 
+// runs the filter for the elapsed time
+KalmanFilter applyFilter(){
+  unsigned long newTime = millis();
+  unsigned long deltaT = newTime - kf.t;
+  updateModelMatrices();
+  updateFilter();
+  kf.t = newTime;
+  return kf;
+}
+
+// creates new A, B, and C matrices based upon the current estimated state of the model
+void updateModelMatrices(unsigned long deltaT){
+    
+}
+
+// performs both the time and measurement update of the kalman filter
 void updateFilter(){
   // Time Update
   mtx_type x_minus[kf.m][1];
